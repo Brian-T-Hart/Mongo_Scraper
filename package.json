@@ -1,0 +1,19 @@
+{
+  "name": "mongo_scraper",
+  "version": "1.0.0",
+  "description": "scraping the news with mongoose",
+  "main": "server.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bdoggincali/Mongo_Scraper.git"
+  },
+  "author": "brian",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bdoggincali/Mongo_Scraper/issues"
+  },
+  "homepage": "https://github.com/bdoggincali/Mongo_Scraper#readme"
+}
