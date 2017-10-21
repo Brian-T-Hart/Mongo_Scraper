@@ -4,7 +4,7 @@
   "description": "scraping the news with mongoose",
   "main": "server.js",
   "scripts": {
-    "test": "test"
+    "test": "npm start"
   },
   "repository": {
     "type": "git",
