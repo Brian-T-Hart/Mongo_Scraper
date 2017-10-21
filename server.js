@@ -53,7 +53,7 @@ app.get("/scrape", function(req, res) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
     var $ = cheerio.load(html);
     // Now, we grab every h2 within an article tag, and do the following:
-    $("article h2").each(function(i, element) {
+    $("article").each(function(i, element) {
 
       // Save an empty result object
       var result = {};
@@ -61,7 +61,7 @@ app.get("/scrape", function(req, res) {
       // Add the text and href of every link, and save them as properties of the result object
       result.title = $(this).children("a").text();
       result.link = $(this).children("a").attr("href");
-      result.summary = $(this).children("p").text();
+      result.summary = $(this).children("li").text();
 
       // Using our Article model, create a new entry
       // This effectively passes the result object to the entry (and the title and link)
@@ -78,11 +78,11 @@ app.get("/scrape", function(req, res) {
           console.log(doc);
         }
       });
-
     });
   });
   // Tell the browser that we finished scraping the text
-  res.send("Scrape Complete");
+  // res.send("Scrape Complete");
+  res.redirect("/");
 });
 
 // This will get the articles we scraped from the mongoDB
@@ -96,6 +96,23 @@ app.get("/articles", function(req, res) {
     // Or send the doc to the browser as a json object
     else {
       res.json(doc);
+
+    }
+  });
+});
+
+// This will delete all articles we scraped from the mongoDB
+app.post("/delete/:id", function(req, res) {
+  // Grab every doc in the Articles array
+  Article.deleteOne({ "_id": req.params.id }, function(error, doc) {
+    // Log any errors
+    if (error) {
+      console.log(error);
+    }
+    // Or send the doc to the browser as a json object
+    else {
+      console.log("Articles Deleted");
+      res.send("Article deleted");
     }
   });
 });
