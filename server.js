@@ -29,7 +29,8 @@ app.use(bodyParser.urlencoded({
 app.use(express.static("public"));
 
 // Database configuration with mongoose
-mongoose.connect("mongodb://localhost/mongo_scraper");
+mongoose.connect("mongodb://heroku_g74bfmcr:l46e7po81ire7kfbhg9dhi4b9g@ds127105.mlab.com:27105/heroku_g74bfmcr");
+// mongoose.connect("mongodb://localhost/mongo_scraper");
 var db = mongoose.connection;
 
 // Show any mongoose errors
@@ -59,9 +60,9 @@ app.get("/scrape", function(req, res) {
       var result = {};
 
       // Add the text and href of every link, and save them as properties of the result object
-      result.title = $(this).children("a").text();
+      result.title = $(this).children(".story-heading").text();
       result.link = $(this).children("a").attr("href");
-      result.summary = $(this).children("li").text();
+      result.summary = $(this).children("p.summary").text();
 
       // Using our Article model, create a new entry
       // This effectively passes the result object to the entry (and the title and link)
@@ -112,7 +113,8 @@ app.post("/delete/:id", function(req, res) {
     // Or send the doc to the browser as a json object
     else {
       console.log("Articles Deleted");
-      res.send("Article deleted");
+      // res.json({});
+      res.redirect("/");
     }
   });
 });
