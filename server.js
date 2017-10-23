@@ -44,9 +44,6 @@ db.once("open", function() {
 });
 
 
-// Routes
-// ======
-
 // A GET request to scrape the echojs website
 app.get("/scrape", function(req, res) {
   // First, we grab the body of the html with request
@@ -65,7 +62,6 @@ app.get("/scrape", function(req, res) {
       result.summary = $(this).children("p.summary").text();
 
       // Using our Article model, create a new entry
-      // This effectively passes the result object to the entry (and the title and link)
       var entry = new Article(result);
 
       // Now, save that entry to the db
@@ -81,8 +77,6 @@ app.get("/scrape", function(req, res) {
       });
     });
   });
-  // Tell the browser that we finished scraping the text
-  // res.send("Scrape Complete");
   res.redirect("/");
 });
 
@@ -97,7 +91,6 @@ app.get("/articles", function(req, res) {
     // Or send the doc to the browser as a json object
     else {
       res.json(doc);
-
     }
   });
 });
@@ -138,12 +131,10 @@ app.get("/articles/:id", function(req, res) {
   });
 });
 
-
 // Create a new note or replace an existing note
 app.post("/articles/:id", function(req, res) {
   // Create a new note and pass the req.body to the entry
   var newNote = new Note(req.body);
-
   // And save the new note the db
   newNote.save(function(error, doc) {
     // Log any errors
