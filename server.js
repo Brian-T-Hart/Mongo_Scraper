@@ -95,6 +95,51 @@ app.get("/articles", function(req, res) {
   });
 });
 
+// This will get the articles we scraped from the mongoDB
+app.get("/saved", function(req, res) {
+  // Grab every doc in the Articles array
+  Article.find({"saved": true}, function(error, doc) {
+    // Log any errors
+    if (error) {
+      console.log(error);
+    }
+    // Or send the doc to the browser as a json object
+    else {
+      res.json(doc);
+    }
+  });
+});
+
+// This will get the articles we scraped from the mongoDB
+app.post("/save/:id", function(req, res) {
+  // Grab every doc in the Articles array
+  Article.updateOne({ "_id": req.params.id }, {$set: {"saved": true}}, function(error, doc) {
+    // Log any errors
+    if (error) {
+      console.log(error);
+    }
+    // Or send the doc to the browser as a json object
+    else {
+      res.redirect("/");
+    }
+  });
+});
+
+// This will get the articles we scraped from the mongoDB
+app.post("/remove/:id", function(req, res) {
+  // Grab every doc in the Articles array
+  Article.updateOne({ "_id": req.params.id }, {$set: {"saved": false}}, function(error, doc) {
+    // Log any errors
+    if (error) {
+      console.log(error);
+    }
+    // Or send the doc to the browser as a json object
+    else {
+      res.redirect("/#");
+    }
+  });
+});
+
 // This will delete all articles we scraped from the mongoDB
 app.post("/delete/:id", function(req, res) {
   // Grab every doc in the Articles array
@@ -105,8 +150,6 @@ app.post("/delete/:id", function(req, res) {
     }
     // Or send the doc to the browser as a json object
     else {
-      console.log("Articles Deleted");
-      // res.json({});
       res.redirect("/");
     }
   });
@@ -126,6 +169,7 @@ app.get("/articles/:id", function(req, res) {
     }
     // Otherwise, send the doc to the browser as a json object
     else {
+      // res.redirect("/");
       res.json(doc);
     }
   });

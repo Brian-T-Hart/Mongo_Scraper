@@ -1,31 +1,72 @@
+
+function getArticles() {
+  $("#articles").empty();
 // Grab the articles as a json
 $.getJSON("/articles", function(data) {
     // For each one
     for (var i = 0; i < data.length; i++) {
       // Display the apropos information on the page
-      $("#articles").append("<h2>" + data[i].title + "</h2><button data-id='" + data[i]._id + "' class= 'addNoteBtn' type ='button'>Add/Edit Note</button><p>" + data[i].summary + "</p><p><a href='" + data[i].link + "' target='_blank'>" + data[i].link + "</a></p><form action= '/delete/" + data[i]._id + "' method='POST'><button class='deleteBtn' type='submit' value='Submit'>Delete</button></form>")
+      $("#articles").append("<div class='appendedArticle'><p class='articleTitle'>" + data[i].title + "</p><p class='articleSummary'>" + data[i].summary + "</p><p class='articleLink'><a href='" + data[i].link + "' target='_blank'>" + data[i].link + "</a></p><p class='buttonRow'><button data-id='" + data[i]._id + "' class= 'addNoteBtn' type ='button'>Note</button><button data-id='" + data[i]._id +"' class='saveArticleBtn' type='button'>Save</button><button action='#' data-id='" + data[i]._id +"' class='deleteBtn' type='button'>Delete</button></p></br></div>")
     }
   });
+}
+
+function getSavedArticles() {
+  $("#articles").empty();
+  $.getJSON("/saved", function(data) {
+    // For each one
+    for (var i = 0; i < data.length; i++) {
+    // Display the apropos information on the page
+    $("#articles").append("<div class='appendedArticle'><p class='articleTitle'>" + data[i].title + "</p><p class='articleSummary'>" + data[i].summary + "</p><p class='articleLink'><a href='" + data[i].link + "' target='_blank'>" + data[i].link + "</a></p><p class='buttonRow'><button data-id='" + data[i]._id + "' class= 'addNoteBtn' type ='button'>Note</button><button data-id='" + data[i]._id +"' class='removeArticleBtn' type='button'>Remove Article</button></p></div>")
+  }
+})
+};
+
+$("#getSavedArticles").click(function() {
+  getSavedArticles();
+});
 
   $(document).on("click", ".deleteBtn", function() {
     var thisId = $(this).attr("data-id");
     $.ajax({
-      method: "DELETE",
+      method: "POST",
       url: "/delete/" + thisId
     })
     .done(function(data) {
-      console.log(data)
+      // alert("Article deleted");
+      $("#articles").empty();
+      getArticles();
     })
   });
 
-  // Whenever someone clicks a p tag
+  $(document).on("click", ".saveArticleBtn", function() {
+    var thisId = $(this).attr("data-id");
+    $.ajax({
+      method: "POST",
+      url: "/save/" + thisId
+    })
+    .done(function(data) {
+      alert("article saved")
+    })
+  });
+
+  $(document).on("click", ".removeArticleBtn", function() {
+    var thisId = $(this).attr("data-id");
+    $.ajax({
+      method: "POST",
+      url: "/remove/" + thisId
+    })
+    .done(function(data) {
+      // alert("Article Removed");
+      getSavedArticles();
+    })
+  });
+
   $(document).on("click", ".addNoteBtn", function() {
     // Empty the notes from the note section
     $("#notes").empty();
-    // Save the id from the p tag
+    // Save the id
     var thisId = $(this).attr("data-id");
-    console.log(thisId);
-  
     // Now make an ajax call for the Article
     $.ajax({
       method: "GET",
@@ -55,9 +96,8 @@ $.getJSON("/articles", function(data) {
   
   // When you click the savenote button
   $(document).on("click", "#savenote", function() {
-    // Grab the id associated with the article from the submit button
+    // Grab the id associated with the article
     var thisId = $(this).attr("data-id");
-  
     // Run a POST request to change the note, using what's entered in the inputs
     $.ajax({
       method: "POST",
@@ -81,4 +121,6 @@ $.getJSON("/articles", function(data) {
     $("#titleinput").val("");
     $("#bodyinput").val("");
   });
+  // on page load, get articles
+  getArticles();
   
